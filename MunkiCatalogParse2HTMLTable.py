@@ -15,15 +15,11 @@ and output the desired information into an HTML table.
 
 """
 
-
-import plistlib
-import re
+import plistlib, codecs
 from distutils.version import LooseVersion
-import codecs
 
 with open('stable', 'rb') as fp:
 	pl = plistlib.readPlist(fp)
-
 app = []
 
 
