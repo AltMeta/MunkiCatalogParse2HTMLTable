@@ -31,7 +31,7 @@ class Software:
 		self.description = description
 		self.version = [version]
 
-def recipesearch():
+def recipesearch(display_name):
 
 	f = open('MunkiCatalogParse2HTMLTable.conf', 'r')
 
@@ -45,8 +45,8 @@ def recipesearch():
 	
 	for dirpath, dirnames, filenames in os.walk(localdir):
 		for x in filenames:
-			print dirpath + '/' + x 
-			#Will do some regex later to search for Display Name
+			if re.search(display_name, x):
+				print dirpath + '/' + x 
 
 
 def main():
@@ -86,6 +86,8 @@ def main():
 			version = info('version')
 		except:
 			version = '0'
+
+		recipesearch(display_name)
 
 
 		catalog.append(Software(display_name,category,description,version))
