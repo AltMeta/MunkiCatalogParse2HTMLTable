@@ -20,6 +20,8 @@ TODO:
 """
 
 import plistlib, codecs
+import re
+import os
 from distutils.version import LooseVersion
 
 class Software:
@@ -30,6 +32,24 @@ class Software:
 		self.category = category
 		self.description = description
 		self.version = [version]
+
+def recipesearch():
+
+	f = open('MunkiCatalogParse2HTMLTable.conf', 'r')
+
+	for i in f:
+		if re.search('overridesdir=', i):
+			overridesdir = i.split('=')[1]
+		elif re.search('localdir=', i):
+			localdir = i.split('=')[1]
+		elif re.search('repodir=', i);
+			repodir = i.split('=')[1]
+	
+	for dirpath, dirnames, filenames in os.walk(overridersdir):
+		for x in filenames:
+			print dirpath + '/' + x 
+			#Will do some regex later to search for Display Name
+
 
 def main():
 
