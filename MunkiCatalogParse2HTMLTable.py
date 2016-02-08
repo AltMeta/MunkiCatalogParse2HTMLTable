@@ -19,9 +19,7 @@ TODO:
 
 """
 
-import plistlib, codecs
-import re
-import os
+import plistlib, codecs, re, os
 from distutils.version import LooseVersion
 
 class Software:
