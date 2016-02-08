@@ -39,6 +39,7 @@ def main():
 	w.write('  <tr>\n')
 	w.write('     <th>Display Name</th>\n')
 	w.write('     <th>Category</th>\n')
+	w.write('     <th>Description</th>\n')
 	w.write('     <th>Version</th>\n')
 	w.write('  </tr>\n')
 
