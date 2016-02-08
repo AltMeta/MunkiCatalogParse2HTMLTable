@@ -43,7 +43,7 @@ def recipesearch():
 		elif re.search('repodir=', i);
 			repodir = i.split('=')[1]
 	
-	for dirpath, dirnames, filenames in os.walk(overridersdir):
+	for dirpath, dirnames, filenames in os.walk(localdir):
 		for x in filenames:
 			print dirpath + '/' + x 
 			#Will do some regex later to search for Display Name
