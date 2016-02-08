@@ -23,51 +23,74 @@ TODO:
 import plistlib, codecs
 from distutils.version import LooseVersion
 
-with open('stable', 'rb') as fp:
-	pl = plistlib.readPlist(fp)
-app = []
+class Software:
+	'common base class for all software'
+
+	def __init__(self, display_name, category, description, version):
+		self.display_name = display_name
+		self.category = category
+		self.description = description
+		self.version = [version]
+
+def main():
+
+	w = codecs.open('software.html', 'w', 'utf-8')
+
+	w.write('<table border="1" style="width:100%"> \n')
+	w.write('  <tr>\n')
+	w.write('     <th>Display Name</th>\n')
+	w.write('     <th>Category</th>\n')
+	w.write('     <th>Version</th>\n')
+	w.write('  </tr>\n')
+
+	with open('stable', 'rb') as fp:
+		pl = plistlib.readPlist(fp)
+	catalog = []
+
+	for x in range(len(pl)):
+		info = pl[x].pop
+	
+		try:
+			display_name = info('display_name')
+		except:
+			display_name = 'fail'
+		try:
+			category = info('category')
+		except:
+			category = 'fail'
+		try:
+			description = info('description')
+		except:
+			description = 'fail'
+		try:
+			version = info('version')
+		except:
+			version = '0'
 
 
-w = codecs.open('software.html', 'w', 'utf-8')
+		catalog.append(Software(display_name,category,description,version))
 
+	for x in range(len(catalog)):
+		for y in range(len(catalog)):
+			if x != y:
+				if catalog[x].display_name != 'done':
+					if catalog[x].display_name == catalog[y].display_name:
+						if catalog[x].category == 'fail':
+							catalog[x].category = catalog[y].category
+						if catalog[x].description == 'fail':
+							catalog[x].description = catalog[y].category
+						catalog[x].version.append(catalog[y].version)
+						catalog[y].display_name = 'done'
 
-w.write('<table border="1" style="width:100%"> \n')
-w.write('  <tr>\n')
-w.write('     <th>Display Name</th>\n')
-w.write('     <th>Category</th>\n')
-w.write('     <th>Description</th>\n')
-w.write('     <th>Version</th>\n')
-w.write('  </tr>\n')
+	for x in range(len(catalog)):
+		if catalog[x].display_name != 'done':
+			w.write('  <tr>\n')
+			w.write('     <th>' + catalog[x].display_name + '</th>\n')
+			w.write('     <th>' + catalog[x].category + '</th>\n')
+			w.write('     <th>' + catalog[x].description + '</th>\n')
+			w.write('     <th>' + str(catalog[x].version) + '</th>\n')
+	w.write('</table>')
+	w.close()
 
-for x in range(len(pl)):
-	software = pl[x].pop
-	try:
-		app.append(software('display_name') + '|' + software('category') + '|' + software('description') + '|' + software('version'))
-	except:
-		pass
-
-for x in range(len(app)):
-	display_name =  app[x].split('|')[0]
-	category = app[x].split('|')[1]
-	description = app[x].split('|')[2]
-	version = app[x].split('|')[3]
-	match = 0
-	ver = 0
-
-	for y in range(len(app)):
-		cdisplay_name =  app[y].split('|')[0]
-		cversion = app[y].split('|')[3]
-		if x != y:
-			if display_name == cdisplay_name:
-				match = 1
-				if LooseVersion(cversion) > LooseVersion(version):
-					ver = 1
-	if ver == 0 or match == 0:	
-		w.write('  <tr>\n')
-		w.write('     <th>' + display_name + '</th>\n')
-		w.write('     <th>' + category + '</th>\n')
-		w.write('     <th>' + description + '</th>\n')
-		w.write('     <th>' + version + '</th>\n')
-
-w.write('</table>')
-w.close()
+if __name__ == '__main__':
+	main()
