@@ -16,7 +16,6 @@ and output the desired information into an HTML table.
 TODO:
 	- Add a column to list if the pkg was built by autopkg inc. date and version of last package
 	- Add columns for recipe names and override names
-	- List all versions in the catalog, not just the newest
 
 """
 
