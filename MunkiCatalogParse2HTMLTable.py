@@ -15,8 +15,6 @@ and output the desired information into an HTML table.
 
 TODO:
 	- Add a column to list if the pkg was built by autopkg inc. date and version of last package
-	- Add columns for recipe names and override names
-
 """
 
 import plistlib, codecs, re, os
@@ -32,7 +30,7 @@ class Software:
 		self.version = [version]
 		self.local_identifier = recipesearch(display_name, '/srv/autopkg/Recipes')
 		self.remote_identifier = recipesearch(display_name, '/srv/autopkg/RecipeRepos')
-		
+		self.override_identifier = recipesearch(display_name, '/srv/autopkg/RecipeOverrides')
 		
 
 def recipesearch(display_name, path):
@@ -61,7 +59,8 @@ def main():
 	w.write('     <th>Display Name</th>\n')
 	w.write('     <th>Category</th>\n')
 	w.write('     <th>Description</th>\n')
-	w.write('     <th>Recipe Name</th>\n')
+	w.write('     <th>Recipe Identifier</th>\n')
+	w.write('     <th>Override Identifier</th>\n')
 	w.write('     <th>Version</th>\n')
 	w.write('  </tr>\n')
 
@@ -111,6 +110,7 @@ def main():
 			w.write('     <th>' + catalog[x].category + '</th>\n')
 			w.write('     <th>' + catalog[x].description + '</th>\n')
 			w.write('     <th>' + str(catalog[x].local_identifier) + str(catalog[x].remote_identifier) + '</th>\n')
+			w.write('     <th>' + str(catalog[x].override_identifier) + '</th>\n')
 			w.write('     <th>' + str(catalog[x].version) + '</th>\n')
 	w.write('</table>')
 	w.close()
