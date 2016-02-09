@@ -30,23 +30,26 @@ class Software:
 		self.category = category
 		self.description = description
 		self.version = [version]
+		self.local_identifier = recipesearch(display_name, '/srv/autopkg/Recipes')
+		self.remote_identifier = recipesearch(display_name, '/srv/autopkg/RecipeRepos')
+		
+		
 
-def recipesearch(display_name):
+def recipesearch(display_name, path):
 
-	f = open('MunkiCatalogParse2HTMLTable.conf', 'r')
+	identifier = []
 
-	for i in f:
-		if re.search('overridesdir=', i):
-			overridesdir = i.split('=')[1]
-		elif re.search('localdir=', i):
-			localdir = i.split('=')[1]
-		elif re.search('repodir=', i);
-			repodir = i.split('=')[1]
-	
-	for dirpath, dirnames, filenames in os.walk(localdir):
+	for dirpath, dirnames, filenames in os.walk(path):
 		for x in filenames:
 			if re.search(display_name, x):
-				print dirpath + '/' + x 
+				try:
+					with open(dirpath + '/' + x, 'rb') as fp:
+						pl = plistlib.readPlist(fp)
+					identifier.append(pl["Identifier"])
+				except:
+					pass
+
+	return identifier
 
 
 def main():
@@ -59,7 +62,6 @@ def main():
 	w.write('     <th>Category</th>\n')
 	w.write('     <th>Description</th>\n')
 	w.write('     <th>Recipe Name</th>\n')
-	w.write('     <th>Override Name</th>\n')
 	w.write('     <th>Version</th>\n')
 	w.write('  </tr>\n')
 
@@ -87,10 +89,8 @@ def main():
 		except:
 			version = '0'
 
-		recipesearch(display_name)
-
-
 		catalog.append(Software(display_name,category,description,version))
+
 
 	for x in range(len(catalog)):
 		for y in range(len(catalog)):
@@ -110,6 +110,7 @@ def main():
 			w.write('     <th>' + catalog[x].display_name + '</th>\n')
 			w.write('     <th>' + catalog[x].category + '</th>\n')
 			w.write('     <th>' + catalog[x].description + '</th>\n')
+			w.write('     <th>' + str(catalog[x].local_identifier) + str(catalog[x].remote_identifier) + '</th>\n')
 			w.write('     <th>' + str(catalog[x].version) + '</th>\n')
 	w.write('</table>')
 	w.close()
